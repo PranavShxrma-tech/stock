@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>alphaprime - Learn and Grow</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&family=Roboto&display=swap" rel="stylesheet" />
+<style>
+  /* Reset and base styles */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #ffffff; /* primary */
+    color: #26392b;
+    transition: background-color 0.4s, color 0.4s;
+  }
+  a {
+    color: #006d5b; /* secondary */
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  /* Logo-area styles */
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .site-logo {
+    height: 52px;
+    width: auto;
+    border-radius: 12px;
+    animation: logo-pulse 2s infinite alternate;
+  }
+  .logo-text {
+    font-family: 'Montserrat Alternates', cursive;
+    font-size: 2rem;
+    color: #006d5b; /* secondary */
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+  @keyframes logo-pulse {
+    0% { filter: brightness(1);}
+    100% { filter: brightness(1.18);}
+  }
+  /* Animated images */
+  .animated-img {
+    animation: float 3s ease-in-out infinite alternate;
+  }
+  @keyframes float {
+    0% { transform: translateY(0);}
+    100% { transform: translateY(-9px);}
+  }
+  /* Buttons base */
+  button, .menu-button {
+    cursor: pointer;
+    background-color: #006d5b; /* secondary */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  button:hover, .menu-button:hover {
+    background-color: #003e36; /* darker secondary */
+    color: #e6f0d8;
+    transform: scale(1.05);
+    transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+  /* Header styles */
+  header {
+    background-color: #ffffff; /* primary */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    position: sticky;
+    top: 0;
+    z-index: 150;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.4s;
+  }
+  /* Dropdown container */
+  .dropdown {
+    position: relative;
+  }
+  .menu-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+  }
+  .menu-button svg {
+    width: 18px;
+    height: 18px;
+    fill: #ffffff;
+    transition: transform 0.3s ease;
+  }
+  .dropdown.open .menu-button svg {
+    transform: rotate(180deg);
+  }
+  /* Dropdown menu */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 47px;
+    background-color: #ffffff; /* primary */
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,109,91,0.35);
+    min-width: 210px;
+    padding: 10px 0;
+    transition: opacity 0.3s ease;
+    z-index: 160;
+  }
+  .dropdown.open .dropdown-menu {
+    display: block;
+  }
+  .dropdown-menu a, 
+  .dropdown-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+    color: #006d5b; /* secondary */
+    padding: 12px 20px;
+    border-radius: 0;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.4;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .dropdown-menu a:hover,
+  .dropdown-menu button:hover,
+  .dropdown-menu a:focus,
+  .dropdown-menu button:focus {
+    background-color: #72c3b1;
+    color: #003e36;
+    outline: none;
+  }
+  a:focus, button:focus, .menu-button:focus {
+    outline: 2px solid #003e36;
+    outline-offset: 2px;
+  }
+  main {
+    padding: 40px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* Hero section with image */
+  .hero {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    min-height: 320px;
+    padding: 30px;
+    background-color: #f8fefc; /* subtle off-white */
+    border-radius: 15px;
+    margin-bottom: 60px;
+    box-shadow: 0 6px 12px rgba(0,109,91,0.25);
+  }
+  .hero .hero-text {
+    flex: 1;
+  }
+  .hero .hero-image img {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,109,91,0.3);
+  }
+  /* Fade-in hero text */
+  .hero h1, .hero p {
+    animation: fadeInUp 1.2s ease forwards;
+    opacity: 0;
+  }
+  .hero h1 {
+    animation-delay: 0.3s;
+    font-size: 2.8rem;
+    color: #006d5b; /* secondary */
+    margin-bottom: 15px;
+    line-height: 1.1;
+  }
+  .hero p {
+    animation-delay: 0.8s;
+    font-size: 1.25rem;
+    color: #4b6531;
+    margin-bottom: 25px;
+    max-width: 450px;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  section {
+    margin-bottom: 60px;
+  }
+  h2.section-title {
+    font-size: 2rem;
+    color: #006d5b; /* secondary */
+    border-bottom: 3px solid #006d5b; /* secondary */
+    padding-bottom: 8px;
+    margin-bottom: 25px;
+    font-weight: 700;
+  }
+  /* courses */
+  .courses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 28px;
+  }
+  .course-card {
+    background: #f9fdfc; /* near white */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 7px rgba(0,109,91,0.3);
+    transition: box-shadow 0.3s ease, background-color 0.4s, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .course-card:hover {
+    box-shadow: 0 8px 14px rgba(0,109,91,0.55);
+    transform: scale(1.03);
+  }
+  .course-card img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .course-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #004d3b;
+  }
+  .course-card p {
+    font-size: 0.95rem;
+    color: #356b58;
+    margin-bottom: 15px;
+    flex-grow: 1;
+  }
+  /* Blog */
+  .blog-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+    gap: 30px;
+  }
+  .blog-post {
+    background-color: #f0fcf8;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0,109,91,0.3);
+    transition: box-shadow 0.3s ease, background-color 0.4s;
+  }
+  .blog-post:hover {
+    box-shadow: 0 8px 20px rgba(0,109,91,0.5);
+  }
+  .blog-post img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .blog-post h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #004d3b;
+    margin-bottom: 8px;
+  }
+  .blog-post p {
+    font-size: 0.95rem;
+    color: #356b58;
+    margin-bottom: 12px;
+    min-height: 60px;
+  }
+  /* Blog "Read More" link style */
+  .read-more {
+    color: #006d5b;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .read-more:hover {
+    text-decoration: underline;
+  }
+  /* Career guidance */
+  .career-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  .career-item {
+    background-color: #f2fcf7;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,109,91,0.25);
+    transition: box-shadow 0.3s ease, background-color 0.4s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .career-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+  }
+  .career-item:hover {
+    box-shadow: 0 6px 14px rgba(0,109,91,0.45);
+  }
+  /* Market Trends & Charts Grid */
+  .market-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+  .market-charts-grid figure {
+    text-align: center;
+    margin: 0;
+  }
+  .market-charts-grid img {
+    height: 100px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,109,91,0.35);
+  }
+  .market-charts-grid figcaption {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: #356b58;
+  }
+  /* Footer */
+  footer {
+    background-color: #006d5b; /* secondary */
+    color: #ffffff;
+    text-align: center;
+    padding: 30px 5%;
+    font-size: 0.9rem;
+    margin-top: 60px;
+    border-radius: 15px 15px 0 0;
+  }
+  footer a {
+    color: #ffffff;
+    font-weight: 600;
+    margin: 0 8px;
+    text-decoration: none;
+  }
+  footer a:hover {
+    text-decoration: underline;
+  }
+  /* dark theme */
+  body.dark {
+    background-color: #121212;
+    color: #d0d9ca;
+  }
+  body.dark header {
+    background-color: #1e1e1e;
+  }
+  body.dark .logo-text {
+    color: #72c3b1;
+  }
+  body.dark .dropdown-menu {
+    background-color: #26392b;
+    box-shadow: 0 8px 20px rgba(58,125,68,0.5);
+  }
+  body.dark .dropdown-menu a, body.dark .dropdown-menu button {
+    color: #d0d9ca;
+  }
+  body.dark .dropdown-menu a:hover,
+  body.dark .dropdown-menu button:hover,
+  body.dark .dropdown-menu a:focus,
+  body.dark .dropdown-menu button:focus {
+    background-color: #3a7d44;
+    color: #e4f0d4;
+  }
+  body.dark .hero {
+    background-color: #26392b;
+  }
+  body.dark .hero h1 {
+    color: #bbee9f;
+  }
+  body.dark .hero p {
+    color: #dce9cd;
+  }
+  body.dark .section-title {
+    color: #a5cc8e;
+    border-color: #3a7d44;
+  }
+  body.dark .course-card {
+    background-color: #1e2a1b;
+  }
+  body.dark .course-card h3 {
+    color: #c2f2a3;
+  }
+  body.dark .blog-post {
+    background-color: #1f2e1e;
+  }
+  body.dark .blog-post h3 {
+    color: #c2f2a3;
+  }
+  body.dark .career-item {
+    background-color: #22371f;
+  }
+  body.dark footer {
+    background-color: #3a7d44;
+    color: #d3edab;
+  }
+  /* modal styles */
+  .modal-overlay, .blog-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 160;
+  }
+  .modal-overlay.active, .blog-modal-overlay.active {
+    display: flex;
+  }
+  .modal, .blog-modal {
+    background: #f9fdf6;
+    padding: 30px 25px;
+    border-radius: 15px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 8px 24px rgba(0,109,91,0.5);
+  }
+  body.dark .modal, body.dark .blog-modal {
+    background: #1e2a1b;
+    box-shadow: 0 8px 24px rgba(58,125,68,0.9);
+    color: #bddca1;
+  }
+  .modal h3, .blog-modal h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #004d3b;
+  }
+  body.dark .modal h3, body.dark .blog-modal h3 {
+    color: #c2f2a3;
+  }
+  .modal p, .blog-modal p {
+    margin-bottom: 20px;
+  }
+  .modal label {
+    font-weight: 600;
+  }
+  .modal input[type="text"], .modal input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 6px 0 16px;
+    border: 1.5px solid #006d5b;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  body.dark .modal input[type="text"], body.dark .modal input[type="email"] {
+    background-color: #26392b;
+    border-color: #72c3b1;
+    color: #d0d9ca;
+  }
+  .modal input::placeholder {
+    color: #72c3b1;
+  }
+  .modal .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+  }
+  .modal .close-btn, .blog-modal .close-btn {
+    background-color: #c94f4f;
+    color: #fff;
+  }
+  .modal .close-btn:hover, .blog-modal .close-btn:hover {
+    background-color: #a33b3b;
+  }
+  .modal .submit-btn {
+    background-color: #006d5b;
+    color: #e4f0d4;
+  }
+  .modal .submit-btn:hover {
+    background-color: #003e36;
+  }
+  @media (max-width: 650px) {
+    header {
+      padding: 12px 3%;
+    }
+    .logo-text {
+      font-size: 1.6rem;
+    }
+    main {
+      padding: 30px 4%;
+    }
+    .dropdown-menu {
+      min-width: 160px;
+    }
+    .hero {
+      flex-direction: column;
+    }
+  }
+  /* Floating logo decor */
+  .floating-logo {
+    position: fixed;
+    top: 30%;
+    right: 20px;
+    width: 100px;
+    opacity: 0.15;
+    border-radius: 15px;
+    animation: floatSlow 6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 50;
+  }
+  @keyframes floatSlow {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating decorative logo -->
+<img src="generated-image.png" alt="Floating Alphaprime Logo" class="floating-logo" />
+
+<header>
+  <div class="logo-area">
+    <img src="generated-image.png" alt="Alphaprime Logo" class="site-logo" />
+    <span class="logo-text">ALPHAPRIME</span>
+  </div>
+  <div class="dropdown" id="dropdownMenu">
+    <button class="menu-button" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-content" id="menuButton">
+      Menu
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7 10l5 5 5-5H7z" />
+      </svg>
+    </button>
+    <div class="dropdown-menu" id="dropdown-content" role="menu" aria-labelledby="menuButton" tabindex="-1">
+      <a href="#home" role="menuitem" tabindex="0" class="menu-link">Home</a>
+      <a href="#courses" role="menuitem" tabindex="0" class="menu-link">Courses</a>
+      <a href="#blog" role="menuitem" tabindex="0" class="menu-link">Blog</a>
+      <a href="#career" role="menuitem" tabindex="0" class="menu-link">Career Guidance</a>
+      <a href="#contact" role="menuitem" tabindex="0" class="menu-link">Contact</a>
+      <button type="button" class="menu-btn enroll-btn" role="menuitem" tabindex="0">Enroll Now</button>
+      <button type="button" class="menu-btn" id="registerBtnDropdown" role="menuitem" tabindex="0">Register</button>
+      <button type="button" class="menu-btn toggle-theme-btn" aria-pressed="false" aria-label="Toggle dark mode" role="menuitem" tabindex="0">Dark Mode</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="hero" aria-label="Website introduction">
+    <div class="hero-text">
+      <h1>Welcome to Alphaprime</h1>
+      <p>Your gateway to mastering skills and advancing your career with expert-led courses and insightful resources.</p>
+      <button id="scrollCourses">Explore Courses</button>
+    </div>
+    <div class="hero-image">
+      <img src="int.png" alt="Learning and Growth" />
+    </div>
+  </section>
+
+  <section id="courses" aria-label="Featured courses">
+    <h2 class="section-title">Featured Courses</h2>
+    <div class="courses-list">
+      <article class="course-card" tabindex="0">
+        <img src="671a94a2b066393141a1526e_AI Stock Trading App.jpg" alt="Stock Trading" />
+        <h3>Fundamentals of Stock Trading</h3>
+        <p>Learn the essential strategies and technical skills required to succeed in stock trading.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+      <article class="course-card" tabindex="0">
+        <img src="a4b0a8e2-bcbc-46dd-87e2-b1509a3e97d3.png" alt="Technical Analysis" />
+        <h3>Technical Analysis Mastery</h3>
+        <p>Deep dive into charts, indicators, and market trends to predict price movements.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+      <article class="course-card" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80" alt="Options Trading" />
+        <h3>Options Trading Explained</h3>
+        <p>Understand options terminology, strategies, and risk management techniques.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Market Trends & Charts</h2>
+    <div class="market-charts-grid">
+      <figure>
+        <img src="Basic Price Action.jpeg" alt="Stock Candles" class="animated-img" />
+        <figcaption>Basic Price Action</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Candlestick_chart_en.svg/400px-Candlestick_chart_en.svg.png" alt="Candlestick Chart" class="animated-img" />
+        <figcaption>Candlestick Chart</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Financial_daily_chart_example.png" alt="Stock Graph" class="animated-img" />
+        <figcaption>Daily Stock Graph</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=160&q=80" alt="Financial Data Analysis" class="animated-img" />
+        <figcaption>Financial Data Analysis</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1508385082359-f4a73918ce7d?auto=format&fit=crop&w=160&q=80" alt="Stock Market Charts" class="animated-img" />
+        <figcaption>Stock Market Charts</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1565371566098-5bb4f1a6ccc8?auto=format&fit=crop&w=160&q=80" alt="Investment Charts" class="animated-img" />
+        <figcaption>Investment Charts</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="blog" aria-label="Blog highlights">
+    <h2 class="section-title">Latest from the Blog</h2>
+    <div class="blog-list">
+      <article class="blog-post" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=320&q=80" alt="Market Sentiment" />
+        <h3>Understanding Market Sentiment</h3>
+        <p>How trader psychology affects market trends and decision-making in trading.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+      <article class="blog-post" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=320&q=80" alt="Technical Indicators" />
+        <h3>Top 5 Technical Indicators</h3>
+        <p>A beginner’s guide to the most effective technical indicators for trading success.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+      <article class="blog-post" tabindex="0">
+        <img src="412b5b4a-d13f-4941-9c1d-131a5de5a0eb.png" alt="Risk Management" />
+        <h3>Risk Management in Trading</h3>
+        <p>Explore key principles to protect your capital and manage trading risks wisely.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="career" aria-label="Career guidance">
+    <h2 class="section-title">Career Guidance</h2>
+    <div class="career-list">
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/2991/2991148.png" alt="Career Building" />
+        <h3>Building a Trading Career</h3>
+        <p>Essential steps and skills to become a professional trader in today’s markets.</p>
+      </article>
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/2910/2910767.png" alt="Job Opportunities" />
+        <h3>Job Opportunities in Finance</h3>
+        <p>Discover promising roles and how to leverage your trading knowledge to land jobs.</p>
+      </article>
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/3135/3135715.png" alt="Networking Tips" />
+        <h3>Networking Tips for Traders</h3>
+        <p>How to connect with industry experts and grow your professional network.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer id="contact" aria-label="Contact information">
+  <p>Contact us at: <a href="mailto:info@alphaprime.com">info@alphaprime.com</a> | Phone: +1 234 567 890</p>
+  <p>
+    Follow us:
+    <a href="#" aria-label="Facebook">Facebook</a> |
+    <a href="#" aria-label="Twitter">Twitter</a> |
+    <a href="#" aria-label="LinkedIn">LinkedIn</a>
+  </p>
+  <p>&copy; 2025 alphaprime. All rights reserved.</p>
+</footer>
+
+<!-- Enrollment Modal -->
+<div class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" role="document">
+    <h3 id="modal-title">Course Title</h3>
+    <p id="modal-description">Course description goes here.</p>
+    <p id="modal-details" style="white-space: pre-line;"></p>
+    <form id="enroll-form" novalidate>
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Your full name" required />
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Your email" required />
+      <div class="modal-buttons">
+        <button type="button" class="close-btn">Cancel</button>
+        <button type="submit" class="submit-btn">Enroll</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Blog Modal for Read More -->
+<div class="blog-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="blog-modal-title">
+  <div class="blog-modal" role="document">
+    <h3 id="blog-modal-title"></h3>
+    <p id="blog-modal-content"></p>
+    <button type="button" class="close-btn">Close</button>
+  </div>
+</div>
+
+<!-- Registration Gateway Modal -->
+<div class="modal-overlay" id="registerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="register-label">
+  <div class="modal" role="document">
+    <h3 id="register-label">Register for alphaprime</h3>
+    <form id="register-form" novalidate>
+      <label for="reg-name">Full Name</label>
+      <input type="text" id="reg-name" name="reg-name" placeholder="Your full name" required />
+      <label for="reg-email">Email</label>
+      <input type="email" id="reg-email" name="reg-email" placeholder="Your email" required />
+      <label for="reg-password">Password</label>
+      <input type="text" id="reg-password" name="reg-password" placeholder="Create a password" required />
+      <div class="modal-buttons" style="margin-top:15px;">
+        <button type="button" class="close-btn" id="closeRegister">Cancel</button>
+        <button type="submit" class="submit-btn">Register</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Menu toggle and accessibility
+  const dropdown = document.getElementById('dropdownMenu');
+  const menuButton = document.getElementById('menuButton');
+  menuButton.addEventListener('click', () => {
+    const isOpen = dropdown.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', isOpen);
+    if(isOpen){
+      document.getElementById('dropdown-content').focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if(!dropdown.contains(e.target)){
+      dropdown.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', false);
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && dropdown.classList.contains('open')){
+      dropdown.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', false);
+      menuButton.focus();
+    }
+  });
+
+
+  // Theme toggle
+  const themeToggleBtns = document.querySelectorAll('.toggle-theme-btn');
+  themeToggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const enabled = document.body.classList.contains('dark');
+      themeToggleBtns.forEach(b => {
+        b.textContent = enabled ? 'Light Mode' : 'Dark Mode';
+        b.setAttribute('aria-pressed', enabled);
+      });
+    });
+  });
+
+
+  // Scroll explore courses
+  document.getElementById('scrollCourses').onclick = () => {
+    document.getElementById('courses').scrollIntoView({behavior: 'smooth'});
+  };
+
+
+  // Enrollment modal
+  const modalOverlay = document.querySelector('.modal-overlay[aria-labelledby="modal-title"]');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDescription = document.getElementById('modal-description');
+  const modalDetails = document.getElementById('modal-details');
+  const enrollForm = document.getElementById('enroll-form');
+  const closeModalBtn = modalOverlay.querySelector('.close-btn');
+  document.querySelectorAll('.enroll-btn, .menu-btn.enroll-btn').forEach(btn => {
+    btn.onclick = e => {
+      let courseData = null;
+      if(btn.classList.contains('menu-btn')){
+        const firstCourse = document.querySelector('.course-card');
+        if(firstCourse) courseData = JSON.parse(firstCourse.getAttribute('data-course') || '{}');
+      }else{
+        courseData = JSON.parse(e.target.closest('.course-card').dataset.course || '{}');
+      }
+      if(!courseData) return;
+      modalTitle.textContent = courseData.title || '';
+      modalDescription.textContent = courseData.description || '';
+      modalDetails.textContent = courseData.details || '';
+      enrollForm.reset();
+      modalOverlay.classList.add('active');
+      modalOverlay.setAttribute('aria-hidden', 'false');
+      enrollForm.name.focus();
+      dropdown.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', false);
+    };
+  });
+  closeModalBtn.onclick = () => {
+    modalOverlay.classList.remove('active');
+    modalOverlay.setAttribute('aria-hidden', 'true');
+  };
+  modalOverlay.onclick = e => {
+    if(e.target === modalOverlay) closeModalBtn.click();
+  };
+  enrollForm.onsubmit = e => {
+    e.preventDefault();
+    if(!enrollForm.checkValidity()){ enrollForm.reportValidity(); return; }
+    alert(`Thank you for enrolling in "${modalTitle.textContent}", ${enrollForm.name.value}! We will contact you shortly.`);
+    closeModalBtn.click();
+  };
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModalBtn.click();
+  });
+
+
+  // Blog modal for Read More
+  const blogModalOverlay = document.querySelector('.blog-modal-overlay');
+  const blogModalTitle = document.getElementById('blog-modal-title');
+  const blogModalContent = document.getElementById('blog-modal-content');
+  const blogModalCloseBtn = blogModalOverlay.querySelector('.close-btn');
+  document.querySelectorAll('.read-more').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const post = e.target.closest('.blog-post');
+      if(post){
+        blogModalTitle.textContent = post.querySelector('h3').textContent;
+        blogModalContent.textContent = post.querySelector('p').textContent;
+        blogModalOverlay.classList.add('active');
+        blogModalOverlay.setAttribute('aria-hidden', 'false');
+        blogModalCloseBtn.focus();
+      }
+    });
+  });
+  blogModalCloseBtn.addEventListener('click', () => {
+    blogModalOverlay.classList.remove('active');
+    blogModalOverlay.setAttribute('aria-hidden', 'true');
+  });
+  blogModalOverlay.addEventListener('click', e => {
+    if(e.target === blogModalOverlay) blogModalCloseBtn.click();
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && blogModalOverlay.classList.contains('active')) blogModalCloseBtn.click();
+  });
+
+
+  // Registration modal
+  const registerModal = document.getElementById('registerModal');
+  const registerBtn = document.getElementById('registerBtn');
+  const registerBtnDropdown = document.getElementById('registerBtnDropdown');
+  const closeRegisterBtn = document.getElementById('closeRegister');
+  function openRegisterModal(){
+    registerModal.classList.add('active');
+    registerModal.setAttribute('aria-hidden', 'false');
+    document.getElementById('reg-name').focus();
+    dropdown.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', false);
+  }
+  if(registerBtn) registerBtn.onclick = openRegisterModal;
+  if(registerBtnDropdown) registerBtnDropdown.onclick = openRegisterModal;
+  if(closeRegisterBtn) closeRegisterBtn.onclick = () => {
+    registerModal.classList.remove('active');
+    registerModal.setAttribute('aria-hidden', 'true');
+  };
+  document.querySelector('#register-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    if(!e.target.checkValidity()){ e.target.reportValidity(); return; }
+    alert('Registration successful! Welcome to alphaprime.');
+    closeRegisterBtn.click();
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && registerModal.classList.contains('active')) closeRegisterBtn.click();
+  });
+
+
+  // Smooth scroll for menu navigation links
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(e.target.getAttribute('href'));
+      if(target){
+        target.scrollIntoView({behavior:'smooth'});
+        dropdown.classList.remove('open');
+        menuButton.setAttribute('aria-expanded', false);
+      }
+    });
+  });
+</script>
+</body>
+</html>
