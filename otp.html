@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>alphaprime - Learn and Grow</title>
+
+<!-- Google Fonts: main + accent for logo -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  color: #0a585b;
+  transition: background-color 0.4s, color 0.4s;
+}
+a {
+  color: #0a585b;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Logo-area styles */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.site-logo {
+  height: 52px;
+  width: auto;
+  border-radius: 16px;
+  animation: logo-pulse 2s infinite alternate;
+}
+.logo-text-wrap{
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+.logo-text {
+  font-family: 'Montserrat Alternates', cursive;
+  font-size: 2rem;
+  color: #0a585b;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+.logo-subtext{
+  font-size: 0.8rem;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  color:#0f766e;
+}
+
+/* simple glow on logo */
+@keyframes logo-pulse {
+  0% { filter: brightness(1);}
+  100% { filter: brightness(1.18);}
+}
+
+/* Animated images */
+.animated-img {
+  animation: float 3s ease-in-out infinite alternate;
+}
+@keyframes float {
+  0% { transform: translateY(0);}
+  100% { transform: translateY(-9px);}
+}
+
+/* Buttons base */
+button, .menu-button {
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 2px solid #0a585b;
+  padding: 10px 22px;
+  border-radius: 999px;
+  color: #0a585b;
+  font-weight: 600;
+  font-size: 0.98rem;
+  transition: background-color 0.3s, color 0.3s, border 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+button:hover, .menu-button:hover {
+  background-color: #0a585b;
+  color: #ffffff;
+  border-color: #0a585b;
+  box-shadow:0 10px 22px rgba(10,88,91,0.25);
+  transform: translateY(-1px);
+}
+
+/* Header styles - glassy card */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 150;
+  padding: 12px 5%;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(120deg, rgba(255,255,255,0.92), rgba(224,252,250,0.9));
+  border-bottom:1px solid rgba(10,88,91,0.08);
+  box-shadow: 0 10px 30px rgba(10,88,91,0.12);
+}
+header .header-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+.menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  background: #0f766e;
+  color:#ffffff;
+  border-color:#0f766e;
+}
+.menu-button svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  transition: transform 0.3s;
+}
+.dropdown.open .menu-button svg {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 47px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 16px 30px rgba(10, 88, 91, 0.20);
+  min-width: 220px;
+  padding: 10px 0;
+  z-index: 160;
+}
+.dropdown.open .dropdown-menu {
+  display: block;
+}
+.dropdown-menu a, 
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  color: #0a585b;
+  padding: 12px 20px;
+  border-radius: 0;
+  border: none;
+  font-weight: 500;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  transition: background-color 0.3s, color 0.3s;
+}
+.dropdown-menu a:hover,
+.dropdown-menu button:hover,
+.dropdown-menu a:focus,
+.dropdown-menu button:focus {
+  background-color: #0a585b;
+  color: #ffffff;
+}
+a:focus, button:focus, .menu-button:focus {
+  outline: 2px solid #0a585b;
+  outline-offset: 2px;
+}
+
+main {
+  padding: 40px 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Hero section with image */
+.hero {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin-bottom: 60px;
+  box-shadow: 0 10px 26px rgba(10, 88, 91, 0.16);
+}
+.hero .hero-text {
+  flex: 1;
+}
+.hero .hero-image img {
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 6px 15px rgba(10, 88, 91, 0.14);
+}
+
+/* Fade-in hero text */
+.hero h1, .hero p {
+  animation: fadeInUp 1.2s ease forwards;
+  opacity: 0;
+}
+.hero h1 {
+  animation-delay: 0.3s;
+  font-size: 2.9rem;
+  color: #0a585b;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+.hero p {
+  animation-delay: 0.8s;
+  font-size: 1.18rem;
+  color: #0f766e;
+  margin-bottom: 25px;
+  max-width: 450px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section {
+  margin-bottom: 60px;
+}
+h2.section-title {
+  font-size: 2rem;
+  color: #0a585b;
+  border-bottom: 3px solid #0a585b;
+  padding-bottom: 8px;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* courses */
+.courses-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 28px;
+}
+.course-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 3px 7px rgba(10, 88, 91, 0.11);
+  transition: box-shadow 0.3s, background-color 0.4s, transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid #0a585b22;
+}
+.course-card:hover {
+  box-shadow: 0 10px 20px rgba(10, 88, 91, 0.22);
+  transform: translateY(-2px);
+}
+.course-card img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.course-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: #0a585b;
+}
+.course-card p {
+  font-size: 0.95rem;
+  color: #0a585b;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+/* Blog */
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+  gap: 30px;
+}
+.blog-post {
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 3px 8px rgba(10, 88, 91, 0.11);
+  transition: box-shadow 0.3s, background-color 0.4s;
+  border: 1.5px solid #0a585b22;
+}
+.blog-post:hover {
+  box-shadow: 0 8px 20px rgba(10, 88, 91, 0.22);
+}
+.blog-post img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.blog-post h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #0a585b;
+  margin-bottom: 8px;
+}
+.blog-post p {
+  font-size: 0.95rem;
+  color: #0a585b;
+  margin-bottom: 12px;
+  min-height: 60px;
+}
+
+/* Blog "Read More" link style */
+.read-more {
+  color: #0a585b;
+  font-weight: 600;
+  cursor: pointer;
+}
+.read-more:hover {
+  text-decoration: underline;
+}
+
+/* Career guidance */
+.career-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.career-item {
+  background-color: #ffffff;
+  padding: 18px;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(10, 88, 91, 0.08);
+  transition: box-shadow 0.3s, background-color 0.4s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1.5px solid #0a585b22;
+}
+.career-item h3 {
+  color: #0a585b;
+}
+.career-item:hover {
+  box-shadow: 0 6px 14px rgba(10, 88, 91, 0.11);
+}
+
+/* Market Trends & Charts Grid */
+.market-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+.market-charts-grid figcaption {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #0a585b;
+}
+
+/* Footer */
+footer {
+  background-color: #0a585b;
+  color: #ffffff;
+  text-align: center;
+  padding: 30px 5%;
+  font-size: 0.9rem;
+  margin-top: 60px;
+  border-radius: 15px 15px 0 0;
+}
+footer a {
+  color: #ffffff;
+  font-weight: 600;
+  margin: 0 8px;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Shared modal styles + OTP layout */
+.modal-overlay, .blog-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(10, 88, 91, 0.15);
+  justify-content: center;
+  align-items: center;
+  z-index: 160;
+}
+.modal-overlay.active, .blog-modal-overlay.active {
+  display: flex;
+}
+.modal, .blog-modal {
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 18px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 18px 40px rgba(10,88,91,0.28);
+  color: #0a585b;
+}
+.modal h3, .blog-modal h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #0a585b;
+}
+.modal input[type="text"],
+.modal input[type="email"],
+.modal input[type="tel"],
+.modal input[type="password"]{
+  width: 100%;
+  padding: 10px 12px;
+  margin: 6px 0 16px;
+  border: 1.5px solid #0a585b;
+  border-radius: 10px;
+  font-size: 0.98rem;
+}
+.modal input::placeholder {
+  color: #a8a8a8;
+}
+
+/* OTP group */
+.otp-section{
+  margin-top: 4px;
+}
+.otp-label{
+  font-weight:600;
+  margin-bottom:4px;
+  display:block;
+}
+.otp-inputs{
+  display:flex;
+  gap:10px;
+  margin:6px 0 12px;
+}
+.otp-inputs input{
+  width:52px;
+  height:52px;
+  border-radius:12px;
+  border:1.5px solid #0a585b;
+  text-align:center;
+  font-size:1.3rem;
+}
+
+/* Modal buttons */
+.modal .modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+.modal .close-btn, .blog-modal .close-btn {
+  background-color: #c94f4f;
+  color: #fff;
+}
+.modal .close-btn:hover, .blog-modal .close-btn:hover {
+  background-color: #a33b3b;
+}
+.modal .submit-btn {
+  background-color: #0a585b;
+  color: #ffffff;
+  border: none;
+}
+.modal .submit-btn:hover {
+  background-color: #063a3a;
+}
+
+/* dark theme (unchanged core behavior, adapted header bg) */
+body.dark {
+  background-color: #121212;
+  color: #d0d9ca;
+}
+body.dark header {
+  background: linear-gradient(120deg, rgba(18,18,18,0.96), rgba(14,45,40,0.96));
+}
+body.dark .logo-text {
+  color: #a8d5a3;
+}
+body.dark .logo-subtext{
+  color:#7bdcb5;
+}
+body.dark .dropdown-menu {
+  background-color: #26392b;
+  box-shadow: 0 8px 20px rgba(58,125,68,0.5);
+}
+body.dark .dropdown-menu a, body.dark .dropdown-menu button {
+  color: #d0d9ca;
+}
+body.dark .dropdown-menu a:hover,
+body.dark .dropdown-menu button:hover,
+body.dark .dropdown-menu a:focus,
+body.dark .dropdown-menu button:focus {
+  background-color: #3a7d44;
+  color: #e4f0d4;
+}
+body.dark .hero {
+  background-color: #26392b;
+}
+body.dark .hero h1 {
+  color: #bbee9f;
+}
+body.dark .hero p {
+  color: #dce9cd;
+}
+body.dark .section-title {
+  color: #a5cc8e;
+  border-color: #3a7d44;
+}
+body.dark .course-card {
+  background-color: #1e2a1b;
+}
+body.dark .course-card h3 {
+  color: #c2f2a3;
+}
+body.dark .blog-post {
+  background-color: #1f2e1e;
+}
+body.dark .blog-post h3 {
+  color: #c2f2a3;
+}
+body.dark .career-item {
+  background-color: #22371f;
+}
+body.dark footer {
+  background-color: #3a7d44;
+  color: #d3edab;
+}
+body.dark .modal, body.dark .blog-modal {
+  background: #1e2a1b;
+  box-shadow: 0 8px 24px rgba(58,125,68,0.9);
+  color: #bddca1;
+}
+
+/* Floating logo decor */
+.floating-logo {
+  position: fixed;
+  top: 30%;
+  right: 20px;
+  width: 100px;
+  opacity: 0.15;
+  border-radius: 15px;
+  animation: floatSlow 6s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 50;
+}
+@keyframes floatSlow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-20px); }
+}
+
+@media (max-width: 650px) {
+  header {
+    padding: 10px 4%;
+  }
+  .logo-text {
+    font-size: 1.6rem;
+  }
+  main {
+    padding: 30px 4%;
+  }
+  .dropdown-menu {
+    min-width: 180px;
+  }
+  .hero {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Floating decorative logo -->
+<img src="2.png" alt="Floating Alphaprime Logo" class="floating-logo" />
+
+<header>
+  <div class="header-inner">
+    <div class="logo-area">
+      <img src="2.png" alt="Alphaprime Logo" class="site-logo" />
+      <div class="logo-text-wrap">
+        <span class="logo-text">ALPHAPRIME</span>
+        <span class="logo-subtext">Learn · Trade · Grow</span>
+      </div>
+    </div>
+    <div class="dropdown" id="dropdownMenu">
+      <button class="menu-button" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-content" id="menuButton">
+        Menu
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M7 10l5 5 5-5H7z" />
+        </svg>
+      </button>
+      <div class="dropdown-menu" id="dropdown-content" role="menu" aria-labelledby="menuButton" tabindex="-1">
+        <a href="#home" role="menuitem" tabindex="0" class="menu-link">Home</a>
+        <a href="#courses" role="menuitem" tabindex="0" class="menu-link">Courses</a>
+        <a href="#blog" role="menuitem" tabindex="0" class="menu-link">Blog</a>
+        <a href="#career" role="menuitem" tabindex="0" class="menu-link">Career Guidance</a>
+        <a href="#contact" role="menuitem" tabindex="0" class="menu-link">Contact</a>
+        <button type="button" class="menu-btn enroll-btn" role="menuitem" tabindex="0">Enroll Now</button>
+        <button type="button" class="menu-btn" id="registerBtnDropdown" role="menuitem" tabindex="0">Register</button>
+        <button type="button" class="menu-btn toggle-theme-btn" aria-pressed="false" aria-label="Toggle dark mode" role="menuitem" tabindex="0">Dark Mode</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- rest of your HTML (hero, courses, blog, etc.) STAYS THE SAME
+     ………………………………………………………………………………… -->
+     <main>
+  <section id="home" class="hero" aria-label="Website introduction">
+    <div class="hero-text">
+      <h1>Welcome to Alphaprime</h1>
+      <p>Your gateway to mastering skills and advancing your career with expert-led courses and insightful resources.</p>
+      <button id="scrollCourses">Explore Courses</button>
+    </div>
+    <div class="hero-image">
+      <img src="int.png" alt="Learning and Growth" />
+    </div>
+  </section>
+
+  <section id="courses" aria-label="Featured courses">
+    <h2 class="section-title">Featured Courses</h2>
+    <div class="courses-list">
+      <article class="course-card" tabindex="0">
+        <img src="671a94a2b066393141a1526e_AI Stock Trading App.jpg" alt="Stock Trading" />
+        <h3>Fundamentals of Stock Trading</h3>
+        <p>Learn the essential strategies and technical skills required to succeed in stock trading.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+      <article class="course-card" tabindex="0">
+        <img src="a4b0a8e2-bcbc-46dd-87e2-b1509a3e97d3.png" alt="Technical Analysis" />
+        <h3>Technical Analysis Mastery</h3>
+        <p>Deep dive into charts, indicators, and market trends to predict price movements.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+      <article class="course-card" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80" alt="Options Trading" />
+        <h3>Options Trading Explained</h3>
+        <p>Understand options terminology, strategies, and risk management techniques.</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Market Trends & Charts</h2>
+    <div class="market-charts-grid">
+      <figure>
+        <img src="Basic Price Action.jpeg" alt="Stock Candles" class="animated-img" />
+        <figcaption>Basic Price Action</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Candlestick_chart_en.svg/400px-Candlestick_chart_en.svg.png" alt="Candlestick Chart" class="animated-img" />
+        <figcaption>Candlestick Chart</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Financial_daily_chart_example.png" alt="Stock Graph" class="animated-img" />
+        <figcaption>Daily Stock Graph</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=160&q=80" alt="Financial Data Analysis" class="animated-img" />
+        <figcaption>Financial Data Analysis</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1508385082359-f4a73918ce7d?auto=format&fit=crop&w=160&q=80" alt="Stock Market Charts" class="animated-img" />
+        <figcaption>Stock Market Charts</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1565371566098-5bb4f1a6ccc8?auto=format&fit=crop&w=160&q=80" alt="Investment Charts" class="animated-img" />
+        <figcaption>Investment Charts</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="blog" aria-label="Blog highlights">
+    <h2 class="section-title">Latest from the Blog</h2>
+    <div class="blog-list">
+      <article class="blog-post" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=320&q=80" alt="Market Sentiment" />
+        <h3>Understanding Market Sentiment</h3>
+        <p>How trader psychology affects market trends and decision-making in trading.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+      <article class="blog-post" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=320&q=80" alt="Technical Indicators" />
+        <h3>Top 5 Technical Indicators</h3>
+        <p>A beginner’s guide to the most effective technical indicators for trading success.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+      <article class="blog-post" tabindex="0">
+        <img src="412b5b4a-d13f-4941-9c1d-131a5de5a0eb.png" alt="Risk Management" />
+        <h3>Risk Management in Trading</h3>
+        <p>Explore key principles to protect your capital and manage trading risks wisely.</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="career" aria-label="Career guidance">
+    <h2 class="section-title">Career Guidance</h2>
+    <div class="career-list">
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/2991/2991148.png" alt="Career Building" />
+        <h3>Building a Trading Career</h3>
+        <p>Essential steps and skills to become a professional trader in today’s markets.</p>
+      </article>
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/2910/2910767.png" alt="Job Opportunities" />
+        <h3>Job Opportunities in Finance</h3>
+        <p>Discover promising roles and how to leverage your trading knowledge to land jobs.</p>
+      </article>
+      <article class="career-item" tabindex="0">
+        <img src="https://cdn-icons-png.flaticon.com/64/3135/3135715.png" alt="Networking Tips" />
+        <h3>Networking Tips for Traders</h3>
+        <p>How to connect with industry experts and grow your professional network.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer id="contact" aria-label="Contact information">
+  <p>Contact us at: <a href="mailto:info@alphaprime.com">info@alphaprime.com</a> | Phone: +1 234 567 890</p>
+  <p>
+    Follow us:
+    <a href="#" aria-label="Facebook">Facebook</a> |
+    <a href="#" aria-label="Twitter">Twitter</a> |
+    <a href="#" aria-label="LinkedIn">LinkedIn</a>
+  </p>
+  <p>&copy; 2025 alphaprime. All rights reserved.</p>
+</footer>
+
+
+<!-- Enrollment Modal WITH OTP -->
+<div class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" role="document">
+    <h3 id="modal-title">Course Title</h3>
+    <p id="modal-description">Course description goes here.</p>
+    <p id="modal-details" style="white-space: pre-line;"></p>
+    <form id="enroll-form" novalidate>
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Your full name" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Your email" required />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="Linked mobile number" required />
+
+      <button type="button" id="enroll-send-otp" class="submit-btn" style="width:100%;margin-bottom:10px;">Send OTP</button>
+
+      <div class="otp-section" id="enroll-otp-section" style="display:none;">
+        <span class="otp-label">Enter OTP</span>
+        <div class="otp-inputs">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="close-btn">Cancel</button>
+        <button type="submit" class="submit-btn">Verify & Enroll</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Blog Modal (unchanged) -->
+<div class="blog-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="blog-modal-title">
+  <div class="blog-modal" role="document">
+    <h3 id="blog-modal-title"></h3>
+    <p id="blog-modal-content"></p>
+    <button type="button" class="close-btn">Close</button>
+  </div>
+</div>
+
+<!-- Registration Modal WITH OTP -->
+<div class="modal-overlay" id="registerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="register-label">
+  <div class="modal" role="document">
+    <h3 id="register-label">Register for alphaprime</h3>
+    <form id="register-form" novalidate>
+      <label for="reg-name">Full Name</label>
+      <input type="text" id="reg-name" name="reg-name" placeholder="Your full name" required />
+
+      <label for="reg-email">Email</label>
+      <input type="email" id="reg-email" name="reg-email" placeholder="Your email" required />
+
+      <label for="reg-phone">Phone Number</label>
+      <input type="tel" id="reg-phone" name="reg-phone" placeholder="Linked mobile number" required />
+
+      <label for="reg-password">Password</label>
+      <input type="password" id="reg-password" name="reg-password" placeholder="Create a password" required />
+
+      <button type="button" id="reg-send-otp" class="submit-btn" style="width:100%;margin-bottom:10px;">Send OTP</button>
+
+      <div class="otp-section" id="reg-otp-section" style="display:none;">
+        <span class="otp-label">Enter OTP</span>
+        <div class="otp-inputs">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+          <input type="text" inputmode="numeric" maxlength="1" disabled>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top:15px;">
+        <button type="button" class="close-btn" id="closeRegister">Cancel</button>
+        <button type="submit" class="submit-btn">Verify & Register</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* existing JS for dropdown, theme toggle, scrolling, blog modal, etc. can stay the same
+   — below is only the OTP+minor updates part */
+
+/* Simple helper to wire 4-box OTP input */
+function setupOtp(sectionEl){
+  const inputs = sectionEl.querySelectorAll('.otp-inputs input');
+  inputs.forEach((input, idx) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\\D/g,'').slice(0,1);
+      if(input.value && idx < inputs.length-1){
+        inputs[idx+1].disabled = false;
+        inputs[idx+1].focus();
+      }
+    });
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Backspace' && !input.value && idx>0){
+        inputs[idx-1].focus();
+      }
+    });
+  });
+  return () => Array.from(inputs).map(i=>i.value).join('');
+}
+
+/* Dropdown menu toggle */
+const dropdown = document.getElementById('dropdownMenu');
+const menuButton = document.getElementById('menuButton');
+menuButton.addEventListener('click', () => {
+  const isOpen = dropdown.classList.toggle('open');
+  menuButton.setAttribute('aria-expanded', isOpen);
+  if(isOpen){
+    document.getElementById('dropdown-content').focus();
+  }
+});
+document.addEventListener('click', e => {
+  if(!dropdown.contains(e.target)){
+    dropdown.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', false);
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && dropdown.classList.contains('open')){
+    dropdown.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', false);
+    menuButton.focus();
+  }
+});
+
+/* Theme toggle */
+const themeToggleBtns = document.querySelectorAll('.toggle-theme-btn');
+themeToggleBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const enabled = document.body.classList.contains('dark');
+    themeToggleBtns.forEach(b => {
+      b.textContent = enabled ? 'Light Mode' : 'Dark Mode';
+      b.setAttribute('aria-pressed', enabled);
+    });
+  });
+});
+
+/* Scroll explore courses */
+document.getElementById('scrollCourses')?.addEventListener('click', () => {
+  document.getElementById('courses').scrollIntoView({behavior:'smooth'});
+});
+
+/* Enrollment modal (with OTP) */
+const modalOverlay = document.querySelector('.modal-overlay[aria-labelledby="modal-title"]');
+const modalTitle = document.getElementById('modal-title');
+const modalDescription = document.getElementById('modal-description');
+const modalDetails = document.getElementById('modal-details');
+const enrollForm = document.getElementById('enroll-form');
+const closeModalBtn = modalOverlay.querySelector('.close-btn');
+const enrollOtpSection = document.getElementById('enroll-otp-section');
+const enrollSendOtpBtn = document.getElementById('enroll-send-otp');
+let getEnrollOtpValue = ()=>'';
+
+document.querySelectorAll('.enroll-btn, .menu-btn.enroll-btn').forEach(btn => {
+  btn.onclick = e => {
+    modalTitle.textContent = 'Enrollment';
+    modalDescription.textContent = 'Fill your details and verify with OTP to enroll.';
+    modalDetails.textContent = '';
+    enrollForm.reset();
+    enrollOtpSection.style.display = 'none';
+    Array.from(enrollOtpSection.querySelectorAll('input')).forEach((i,idx)=>{
+      i.value='';
+      i.disabled = idx!==0;
+    });
+    modalOverlay.classList.add('active');
+    modalOverlay.setAttribute('aria-hidden','false');
+    enrollForm.name.focus();
+    dropdown.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', false);
+  };
+});
+
+enrollSendOtpBtn.addEventListener('click', () => {
+  if(!enrollForm.phone.value){
+    alert('Please enter your phone number first.');
+    enrollForm.phone.focus();
+    return;
+  }
+  alert('Demo OTP sent: 1234');
+  enrollOtpSection.style.display = 'block';
+  getEnrollOtpValue = setupOtp(enrollOtpSection);
+});
+
+closeModalBtn.onclick = () => {
+  modalOverlay.classList.remove('active');
+  modalOverlay.setAttribute('aria-hidden','true');
+};
+modalOverlay.addEventListener('click', e => {
+  if(e.target === modalOverlay) closeModalBtn.click();
+});
+
+enrollForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if(!enrollForm.checkValidity()){
+    enrollForm.reportValidity();
+    return;
+  }
+  const otp = getEnrollOtpValue();
+  if(otp !== '1234'){
+    alert('Invalid OTP. Please try again (demo code is 1234).');
+    return;
+  }
+  alert('Thank you for enrolling, ' + enrollForm.name.value + '!');
+  closeModalBtn.click();
+});
+
+/* Blog modal (unchanged) */
+const blogModalOverlay = document.querySelector('.blog-modal-overlay');
+const blogModalTitle = document.getElementById('blog-modal-title');
+const blogModalContent = document.getElementById('blog-modal-content');
+const blogModalCloseBtn = blogModalOverlay.querySelector('.close-btn');
+document.querySelectorAll('.read-more').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    const post = e.target.closest('.blog-post');
+    if(post){
+      blogModalTitle.textContent = post.querySelector('h3').textContent;
+      blogModalContent.textContent = post.querySelector('p').textContent;
+      blogModalOverlay.classList.add('active');
+      blogModalOverlay.setAttribute('aria-hidden','false');
+      blogModalCloseBtn.focus();
+    }
+  });
+});
+blogModalCloseBtn.addEventListener('click', () => {
+  blogModalOverlay.classList.remove('active');
+  blogModalOverlay.setAttribute('aria-hidden','true');
+});
+blogModalOverlay.addEventListener('click', e => {
+  if(e.target === blogModalOverlay) blogModalCloseBtn.click();
+});
+
+/* Registration modal with OTP */
+const registerModal = document.getElementById('registerModal');
+const registerBtn = document.getElementById('registerBtn');
+const registerBtnDropdown = document.getElementById('registerBtnDropdown');
+const closeRegisterBtn = document.getElementById('closeRegister');
+const registerForm = document.getElementById('register-form');
+const regOtpSection = document.getElementById('reg-otp-section');
+const regSendOtpBtn = document.getElementById('reg-send-otp');
+let getRegOtpValue = ()=>'';
+
+function openRegisterModal(){
+  registerModal.classList.add('active');
+  registerModal.setAttribute('aria-hidden','false');
+  registerForm.reset();
+  regOtpSection.style.display = 'none';
+  Array.from(regOtpSection.querySelectorAll('input')).forEach((i,idx)=>{
+    i.value='';
+    i.disabled = idx!==0;
+  });
+  document.getElementById('reg-name').focus();
+  dropdown.classList.remove('open');
+  menuButton.setAttribute('aria-expanded', false);
+}
+if(registerBtn) registerBtn.onclick = openRegisterModal;
+if(registerBtnDropdown) registerBtnDropdown.onclick = openRegisterModal;
+
+regSendOtpBtn.addEventListener('click', () => {
+  if(!registerForm['reg-phone'].value){
+    alert('Please enter your phone number first.');
+    registerForm['reg-phone'].focus();
+    return;
+  }
+  alert('Demo OTP sent: 1234');
+  regOtpSection.style.display = 'block';
+  getRegOtpValue = setupOtp(regOtpSection);
+});
+
+closeRegisterBtn.addEventListener('click', () => {
+  registerModal.classList.remove('active');
+  registerModal.setAttribute('aria-hidden','true');
+});
+
+registerForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if(!registerForm.checkValidity()){
+    registerForm.reportValidity();
+    return;
+  }
+  const otp = getRegOtpValue();
+  if(otp !== '1234'){
+    alert('Invalid OTP. Please try again (demo code is 1234).');
+    return;
+  }
+  alert('Registration successful! Welcome to alphaprime.');
+  closeRegisterBtn.click();
+});
+
+/* Smooth scroll for menu navigation links */
+document.querySelectorAll('.menu-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(e.target.getAttribute('href'));
+    if(target){
+      target.scrollIntoView({behavior:'smooth'});
+      dropdown.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', false);
+    }
+  });
+});
+</script>
+</body>
+</html>
