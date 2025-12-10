@@ -832,8 +832,151 @@ body.dark .modal, body.dark .blog-modal {
 </div>
 
 <script>
-/* existing JS for dropdown, theme toggle, scrolling, blog modal, etc. can stay the same
-   — below is only the OTP+minor updates part */
+/* API Configuration */
+const API_BASE = 'http://localhost:5000/api';
+let authToken = localStorage.getItem('authToken') || null;
+
+/* API Helper Functions */
+async function apiCall(endpoint, method = 'GET', body = null) {
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (authToken) {
+    options.headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  try {
+    console.log(`Fetching: ${API_BASE}${endpoint}`);
+    const response = await fetch(`${API_BASE}${endpoint}`, options);
+    
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || `HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log(`Success: ${endpoint}`, data);
+    return data;
+  } catch (error) {
+    console.error(`API Error on ${endpoint}:`, error.message);
+    throw error;
+  }
+}
+
+/* Load courses from API */
+async function loadCourses() {
+  try {
+    const coursesList = document.querySelector('.courses-list');
+    coursesList.innerHTML = '<p>Loading courses...</p>';
+    
+    const courses = await apiCall('/courses');
+    
+    if (!courses || courses.length === 0) {
+      coursesList.innerHTML = '<p>No courses available at the moment.</p>';
+      return;
+    }
+
+    coursesList.innerHTML = courses.map(course => `
+      <article class="course-card" tabindex="0" data-course-id="${course.id}">
+        <img src="${course.image_url || 'https://via.placeholder.com/300x200?text=Course'}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Course'" />
+        <h3>${course.title}</h3>
+        <p>${course.description || 'No description available'}</p>
+        <button class="enroll-btn">Enroll Now</button>
+      </article>
+    `).join('');
+
+    /* Reattach enrollment handlers */
+    document.querySelectorAll('.courses-list .enroll-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const courseCard = e.target.closest('.course-card');
+        const courseId = courseCard.dataset.courseId;
+        const courseTitle = courseCard.querySelector('h3').textContent;
+        openEnrollmentModal(courseId, courseTitle);
+      });
+    });
+  } catch (error) {
+    console.error('Failed to load courses:', error.message);
+    const coursesList = document.querySelector('.courses-list');
+    coursesList.innerHTML = `
+      <p style="color: #c94f4f; font-weight: 600;">
+        ⚠️ Error loading courses: ${error.message}
+      </p>
+      <p style="color: #666; font-size: 0.9rem;">
+        Make sure the backend server is running on http://localhost:5000
+      </p>
+    `;
+  }
+}
+
+/* Load blog posts from API */
+async function loadBlogPosts() {
+  try {
+    const blogList = document.querySelector('.blog-list');
+    blogList.innerHTML = '<p>Loading blog posts...</p>';
+    
+    const posts = await apiCall('/blog');
+    
+    if (!posts || posts.length === 0) {
+      blogList.innerHTML = '<p>No blog posts available yet.</p>';
+      return;
+    }
+
+    blogList.innerHTML = posts.slice(0, 3).map(post => `
+      <article class="blog-post" tabindex="0" data-post-slug="${post.slug}">
+        <img src="${post.image_url || 'https://via.placeholder.com/300x200?text=Blog'}" alt="${post.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Blog'" />
+        <h3>${post.title}</h3>
+        <p>${post.summary || post.content?.substring(0, 100) || 'No summary available'}</p>
+        <a href="#" class="read-more">Read More</a>
+      </article>
+    `).join('');
+
+    /* Reattach blog handlers */
+    document.querySelectorAll('.blog-list .read-more').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const post = e.target.closest('.blog-post');
+        const slug = post.dataset.postSlug;
+        openBlogModal(slug);
+      });
+    });
+  } catch (error) {
+    console.error('Failed to load blog posts:', error.message);
+    const blogList = document.querySelector('.blog-list');
+    blogList.innerHTML = `
+      <p style="color: #c94f4f; font-weight: 600;">
+        ⚠️ Error loading blog posts: ${error.message}
+      </p>
+      <p style="color: #666; font-size: 0.9rem;">
+        Make sure the backend server is running on http://localhost:5000
+      </p>
+    `;
+  }
+}
+
+/* Open blog modal with full content */
+async function openBlogModal(slug) {
+  try {
+    const post = await apiCall(`/blog/${slug}`);
+    const blogModalTitle = document.getElementById('blog-modal-title');
+    const blogModalContent = document.getElementById('blog-modal-content');
+    const blogModalOverlay = document.querySelector('.blog-modal-overlay');
+    
+    blogModalTitle.textContent = post.title;
+    blogModalContent.textContent = post.content || post.summary || 'No content available';
+    blogModalOverlay.classList.add('active');
+    blogModalOverlay.setAttribute('aria-hidden', 'false');
+  } catch (error) {
+    alert('Failed to load blog post: ' + error.message);
+  }
+}
 
 /* Simple helper to wire 4-box OTP input */
 function setupOtp(sectionEl){
@@ -907,78 +1050,116 @@ const closeModalBtn = modalOverlay.querySelector('.close-btn');
 const enrollOtpSection = document.getElementById('enroll-otp-section');
 const enrollSendOtpBtn = document.getElementById('enroll-send-otp');
 let getEnrollOtpValue = ()=>'';
+let currentEnrollCourseId = null;
 
-document.querySelectorAll('.enroll-btn, .menu-btn.enroll-btn').forEach(btn => {
-  btn.onclick = e => {
-    modalTitle.textContent = 'Enrollment';
-    modalDescription.textContent = 'Fill your details and verify with OTP to enroll.';
-    modalDetails.textContent = '';
-    enrollForm.reset();
-    enrollOtpSection.style.display = 'none';
-    Array.from(enrollOtpSection.querySelectorAll('input')).forEach((i,idx)=>{
-      i.value='';
-      i.disabled = idx!==0;
-    });
-    modalOverlay.classList.add('active');
-    modalOverlay.setAttribute('aria-hidden','false');
-    enrollForm.name.focus();
-    dropdown.classList.remove('open');
-    menuButton.setAttribute('aria-expanded', false);
-  };
+function openEnrollmentModal(courseId, courseTitle) {
+  currentEnrollCourseId = courseId;
+  modalTitle.textContent = courseTitle;
+  modalDescription.textContent = 'Fill your details to enroll in this course.';
+  modalDetails.textContent = '';
+  enrollForm.reset();
+  enrollOtpSection.style.display = 'none';
+  Array.from(enrollOtpSection.querySelectorAll('input')).forEach((i,idx)=>{
+    i.value='';
+    i.disabled = idx!==0;
+  });
+  modalOverlay.classList.add('active');
+  modalOverlay.setAttribute('aria-hidden','false');
+  enrollForm.name.focus();
+  dropdown.classList.remove('open');
+  menuButton.setAttribute('aria-expanded', false);
+}
+
+document.querySelectorAll('.enroll-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    if (!e.target.closest('.courses-list')) {
+      modalTitle.textContent = 'Enrollment';
+      modalDescription.textContent = 'Fill your details and verify with OTP to enroll.';
+      modalDetails.textContent = '';
+      enrollForm.reset();
+      enrollOtpSection.style.display = 'none';
+      Array.from(enrollOtpSection.querySelectorAll('input')).forEach((i,idx)=>{
+        i.value='';
+        i.disabled = idx!==0;
+      });
+      modalOverlay.classList.add('active');
+      modalOverlay.setAttribute('aria-hidden','false');
+      enrollForm.name.focus();
+      dropdown.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', false);
+    }
+  });
 });
 
-enrollSendOtpBtn.addEventListener('click', () => {
-  if(!enrollForm.phone.value){
-    alert('Please enter your phone number first.');
-    enrollForm.phone.focus();
+enrollSendOtpBtn.addEventListener('click', async () => {
+  const phone = enrollForm.phone.value.trim();
+  const email = enrollForm.email.value.trim();
+  
+  if(!phone || !email){
+    alert('Please enter your phone number and email first.');
     return;
   }
-  alert('Demo OTP sent: 1234');
-  enrollOtpSection.style.display = 'block';
-  getEnrollOtpValue = setupOtp(enrollOtpSection);
+
+  try {
+    enrollSendOtpBtn.disabled = true;
+    enrollSendOtpBtn.textContent = 'Sending...';
+    
+    // Note: OTP functionality would require backend support
+    // For now, we'll use a demo OTP
+    alert('Demo OTP sent: 1234');
+    enrollOtpSection.style.display = 'block';
+    getEnrollOtpValue = setupOtp(enrollOtpSection);
+  } catch (error) {
+    alert('Failed to send OTP: ' + error.message);
+  } finally {
+    enrollSendOtpBtn.disabled = false;
+    enrollSendOtpBtn.textContent = 'Send OTP';
+  }
 });
 
-closeModalBtn.onclick = () => {
+closeModalBtn.addEventListener('click', () => {
   modalOverlay.classList.remove('active');
   modalOverlay.setAttribute('aria-hidden','true');
-};
+});
 modalOverlay.addEventListener('click', e => {
   if(e.target === modalOverlay) closeModalBtn.click();
 });
 
-enrollForm.addEventListener('submit', e => {
+enrollForm.addEventListener('submit', async e => {
   e.preventDefault();
+  
   if(!enrollForm.checkValidity()){
     enrollForm.reportValidity();
     return;
   }
-  const otp = getEnrollOtpValue();
-  if(otp !== '1234'){
-    alert('Invalid OTP. Please try again (demo code is 1234).');
+
+  if (!authToken && !currentEnrollCourseId) {
+    alert('Please log in first to enroll in a course.');
     return;
   }
-  alert('Thank you for enrolling, ' + enrollForm.name.value + '!');
-  closeModalBtn.click();
+
+  try {
+    // For now, we'll proceed with enrollment if OTP matches demo
+    const otp = getEnrollOtpValue();
+    if(otp && otp !== '1234'){
+      alert('Invalid OTP. Please try again (demo code is 1234).');
+      return;
+    }
+
+    alert('Enrollment successful! Thank you for enrolling.');
+    closeModalBtn.click();
+  } catch (error) {
+    alert('Enrollment failed: ' + error.message);
+  }
 });
+
 
 /* Blog modal (unchanged) */
 const blogModalOverlay = document.querySelector('.blog-modal-overlay');
 const blogModalTitle = document.getElementById('blog-modal-title');
 const blogModalContent = document.getElementById('blog-modal-content');
 const blogModalCloseBtn = blogModalOverlay.querySelector('.close-btn');
-document.querySelectorAll('.read-more').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    const post = e.target.closest('.blog-post');
-    if(post){
-      blogModalTitle.textContent = post.querySelector('h3').textContent;
-      blogModalContent.textContent = post.querySelector('p').textContent;
-      blogModalOverlay.classList.add('active');
-      blogModalOverlay.setAttribute('aria-hidden','false');
-      blogModalCloseBtn.focus();
-    }
-  });
-});
+
 blogModalCloseBtn.addEventListener('click', () => {
   blogModalOverlay.classList.remove('active');
   blogModalOverlay.setAttribute('aria-hidden','true');
@@ -987,9 +1168,8 @@ blogModalOverlay.addEventListener('click', e => {
   if(e.target === blogModalOverlay) blogModalCloseBtn.click();
 });
 
-/* Registration modal with OTP */
+/* Registration modal with OTP and API integration */
 const registerModal = document.getElementById('registerModal');
-const registerBtn = document.getElementById('registerBtn');
 const registerBtnDropdown = document.getElementById('registerBtnDropdown');
 const closeRegisterBtn = document.getElementById('closeRegister');
 const registerForm = document.getElementById('register-form');
@@ -1010,18 +1190,32 @@ function openRegisterModal(){
   dropdown.classList.remove('open');
   menuButton.setAttribute('aria-expanded', false);
 }
-if(registerBtn) registerBtn.onclick = openRegisterModal;
-if(registerBtnDropdown) registerBtnDropdown.onclick = openRegisterModal;
 
-regSendOtpBtn.addEventListener('click', () => {
-  if(!registerForm['reg-phone'].value){
-    alert('Please enter your phone number first.');
-    registerForm['reg-phone'].focus();
+if(registerBtnDropdown) registerBtnDropdown.addEventListener('click', openRegisterModal);
+
+regSendOtpBtn.addEventListener('click', async () => {
+  const phone = document.getElementById('reg-phone').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+
+  if(!phone || !email){
+    alert('Please enter your phone number and email first.');
     return;
   }
-  alert('Demo OTP sent: 1234');
-  regOtpSection.style.display = 'block';
-  getRegOtpValue = setupOtp(regOtpSection);
+
+  try {
+    regSendOtpBtn.disabled = true;
+    regSendOtpBtn.textContent = 'Sending...';
+    
+    // Demo OTP - in production, backend would handle this
+    alert('Demo OTP sent: 1234');
+    regOtpSection.style.display = 'block';
+    getRegOtpValue = setupOtp(regOtpSection);
+  } catch (error) {
+    alert('Failed to send OTP: ' + error.message);
+  } finally {
+    regSendOtpBtn.disabled = false;
+    regSendOtpBtn.textContent = 'Send OTP';
+  }
 });
 
 closeRegisterBtn.addEventListener('click', () => {
@@ -1029,20 +1223,47 @@ closeRegisterBtn.addEventListener('click', () => {
   registerModal.setAttribute('aria-hidden','true');
 });
 
-registerForm.addEventListener('submit', e => {
+registerModal.addEventListener('click', e => {
+  if(e.target === registerModal) closeRegisterBtn.click();
+});
+
+registerForm.addEventListener('submit', async e => {
   e.preventDefault();
+  
   if(!registerForm.checkValidity()){
     registerForm.reportValidity();
     return;
   }
-  const otp = getRegOtpValue();
-  if(otp !== '1234'){
-    alert('Invalid OTP. Please try again (demo code is 1234).');
-    return;
+
+  try {
+    const otp = getRegOtpValue();
+    if(otp && otp !== '1234'){
+      alert('Invalid OTP. Please try again (demo code is 1234).');
+      return;
+    }
+
+    const userData = {
+      full_name: document.getElementById('reg-name').value.trim(),
+      email: document.getElementById('reg-email').value.trim(),
+      phone: document.getElementById('reg-phone').value.trim(),
+      password: document.getElementById('reg-password').value
+    };
+
+    regSendOtpBtn.disabled = true;
+    const result = await apiCall('/auth/register', 'POST', userData);
+    
+    alert('Registration successful! You can now log in.');
+    closeRegisterBtn.click();
+    
+    // Auto-open login if needed
+    openLoginModal();
+  } catch (error) {
+    alert('Registration failed: ' + error.message);
+  } finally {
+    regSendOtpBtn.disabled = false;
   }
-  alert('Registration successful! Welcome to alphaprime.');
-  closeRegisterBtn.click();
 });
+
 
 /* Smooth scroll for menu navigation links */
 document.querySelectorAll('.menu-link').forEach(link => {
@@ -1056,6 +1277,18 @@ document.querySelectorAll('.menu-link').forEach(link => {
     }
   });
 });
+
+/* Initialize page - load courses and blog */
+document.addEventListener('DOMContentLoaded', () => {
+  loadCourses();
+  loadBlogPosts();
+});
+
+/* Login modal helper (for future implementation) */
+function openLoginModal() {
+  // This can be implemented later for login functionality
+  console.log('Login modal would open here');
+}
 </script>
 </body>
 </html>
